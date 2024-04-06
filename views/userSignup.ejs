@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Signup</title>
+<style>
+  .error { color: red; }
+</style>
+</head>
+<body>
+
+<h2>User Signup</h2>
+
+<form id="signupForm" onsubmit="return validateForm()">
+  <div>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+  </div>
+  <div>
+    <label for="mobile">Mobile Number:</label>
+    <input type="tel" id="mobile" name="mobile" required pattern="[0-9]{10}">
+  </div>
+  <div>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+  </div>
+  <div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+  </div>
+  <div>
+    <label for="confirmPassword">Confirm Password:</label>
+    <input type="password" id="confirmPassword" name="confirmPassword" required>
+  </div>
+  <button type="submit">Sign Up</button>
+</form>
+
+<script>
+function validateForm() {
+  var name = document.getElementById("name").value;
+  var mobile = document.getElementById("mobile").value;
+  var email = document.getElementById("email").value;
+  var password = document.getElementById("password").value;
+  var confirmPassword = document.getElementById("confirmPassword").value;
+  var error = "";
+
+  if (!name.trim()) {
+    error += "Name is required.\n";
+  }
+  
+  if (!mobile.match(/^\d{10}$/)) {
+    error += "Mobile number must be 10 digits.\n";
+  }
+  
+  if (!email.match(/\S+@\S+\.\S+/)) {
+    error += "Invalid email address.\n";
+  }
+
+  if (password.length < 8) {
+    error += "Password must be at least 8 characters.\n";
+  }
+
+  if (password !== confirmPassword) {
+    error += "Passwords do not match.\n";
+  }
+
+  if (error) {
+    alert(error);
+    return false;
+  }
+  
+  // If all validations pass, you can submit the form
+  return true;
+}
+</script>
+
+</body>
+</html>
