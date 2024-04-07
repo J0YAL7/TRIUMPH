@@ -4,7 +4,7 @@ const userController = {}
 
 userController.userSignup =  async (req, res) => {
     const { name, mobile, email, password } = req.body;
-  console.log("Hii",req.body);
+      console.log("Hii",req.body);
     try {
       // Create a new user document
       const newUser = new User({
