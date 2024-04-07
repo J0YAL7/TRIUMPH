@@ -1,24 +1,27 @@
-const { MongoClient } = require('mongodb');
+const User = require('../models/userSchema'); // Import the User schema/model
+const userController = {}
 
-// Connection URI for MongoDB
-const uri = 'mongodb://localhost:27017/TRIUMPH';
 
-// Create a new MongoClient
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-// Connect to MongoDB
-async function connectToDatabase() {
+userController.userSignup =  async (req, res) => {
+    const { name, mobile, email, password } = req.body;
+  console.log("Hii",req.body);
     try {
-        // Connect the client to the MongoDB server
-        await client.connect();
-        console.log('Connected to MongoDB.');
-
-        // Once connected, you can perform database operations here
-
+      // Create a new user document
+      const newUser = new User({
+        name,
+        mobile,
+        email,
+        password
+      });
+  
+      // Save the user document to the database
+      await newUser.save();
+  
+      console.log('User created successfully.');
+      res.status(201).json({ message: 'User created successfully' });
     } catch (err) {
-        console.error('MongoDB connection error:', err);
+      console.error('Error creating user:', err);
+      res.status(500).json({ error: 'Failed to create user' });
     }
-}
-
-// Call the connectToDatabase function to establish the connection
-connectToDatabase();
+  };
+  module.exports = userController
