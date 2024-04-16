@@ -4,7 +4,7 @@
   <div class="form-container sign-up">
 
    
-    <form id="registrationForm" action="/Router/userRoute.js" method="post" onsubmit="return validate()">
+    <form id="registrationForm" action="/signup" method="post">
       <h1>Create Account</h1>
       
       
@@ -14,7 +14,7 @@
           <p id="nameError"></p>
       </div>
       <div class="form-group">
-          <input type="text" id="email" name="email" placeholder="Email">
+          <input type="email" id="email" name="email" placeholder="Email">
           <p id="emailError"></p>
       </div>
       <div class="form-group">
@@ -29,7 +29,7 @@
          <input type="Number" id="mobile" name="mobile" placeholder="Enter your Mobile number">
          <p id="mobileError"></p>
      </div>
-      <button type="submit">Sign Up</button>
+      <button type="submit" id="signupForm">Sign Up</button>
       <!-- <% if (typeof message !== 'undefined') { %>
          <h4><%= message %></h4>
       <% } %> -->
@@ -37,7 +37,7 @@
   
   </div>
   <div class="form-container sign-in">
-      <form method="post" action="/Router/userRoute.js">
+      <form method="post" action="/login">
           <h1>Log In</h1>
           <div class="social-icons">
           </div>
@@ -75,6 +75,8 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
+    background-image: url('/assests/img/loginbg.jpg');
+    background-size: cover; 
 }
 span{
     color: red;
@@ -84,7 +86,7 @@ span{
 
 body{
     background-color: #c9d6ff;
-    background: linear-gradient(to right, #cecbcb, #2b99d0);
+    background: linear-gradient(to right, #C33764  , #1D2671);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -122,7 +124,7 @@ body{
 }
 
 .container button{
-    background-color: rgb(0, 234, 255);
+    background-color: rgb(0, 0, 0);
     color: #fff;
     font-size: 12px;
     padding: 10px 45px;
@@ -136,7 +138,7 @@ body{
 }
 
 .container button:hover{
-    background-color: #00a1ff;
+    background-color: #de0c0c;
 }
 
 .container button.hidden{
@@ -226,9 +228,9 @@ body{
 }
 
 .toggle{
-    background-color: linear-gradient(to left, #00a1ff, #00ff8f);
+    background-color: linear-gradient(to right, #cecbcb, #2b99d0);
     height: 100%;
-    background: linear-gradient(to right, #C33764  , #1D2671);
+    background:linear-gradient(to right, #cecbcb, #2b99d0);
     color: #fff;
     position: relative;
     left: -100%;
@@ -297,7 +299,8 @@ body{
 }
 </style>
 <script>
-  const container = document.getElementById('container');
+
+    const container = document.getElementById('container');
 const registerBtn = document.getElementById('register');
 const loginBtn = document.getElementById('login');
 
@@ -308,4 +311,55 @@ registerBtn.addEventListener('click', () => {
 loginBtn.addEventListener('click', () => {
     container.classList.remove("active");
 });
+
+
+   
+document.getElementById('signupForm').addEventListener('click', async function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Get user-entered values
+    var name = document.getElementById('username').value;
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+    var mobile = document.getElementById('mobile').value;
+    var confirmPassword=document.getElementById('confirmPassword').value;
+
+ if (!name || !email || !password || !confirmPassword || !mobile) {
+        alert('All fields are required');
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+    }
+   
+    try {
+        // Send form data to the server using fetch or another AJAX method
+        const response = await fetch('/signup1', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: name, mobile: mobile, email: email, password: password }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            if (!data.success) {
+                console.error("Data failed to submit");
+            } else {
+                console.log("Data submitted successfully");
+                window.location.href='/getOtpPage'
+            }
+        } else {
+            console.error("Server responded with error:", response.status);
+        }
+    } catch (error) {
+        console.error('Error occurred during form submission:', error);
+    }
+});
+
+
 </script>
