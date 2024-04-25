@@ -4,6 +4,7 @@ const User = require('../../models/userSchema/userSchema'); // Import the User s
 const {sendOtpEmail} = require('../emailService'); // Import the sendOtpEmail function
 const bcrypt = require('bcrypt');
 
+
 const securePassword = async(password)=>{
   try {
     const passwordHash = await bcrypt.hash(password, 10);
@@ -43,17 +44,14 @@ userController.userSignup = async (req, res) => {
     await newUser.save();
 
     console.log('User created successfully.');
+    
 
-    // Generate OTP
-    const otp = generateOTP();
-    console.log(`Your OTP is ${otp}`);
-
-    // Store the OTP in the session for OTP verification
-    req.session.otp = otp;
+ 
 
     // Send OTP email to the user
-    await sendOtpEmail(email, otp);
-     
+    await emailVerification(email,req,res);
+        
+   
     
 
     // Redirect the user to the OTP page
@@ -63,6 +61,54 @@ userController.userSignup = async (req, res) => {
     res.status(500).json({ error: 'Failed to create user' });
   }
 };
+
+let otpVal;
+    const emailVerification = async (email,req,res)=>{
+      try{ 
+        console.log("Sucsess");
+          const otpVal = generateOTP();
+          req.session.otp=otpVal
+          console.log(`Your OTP is ${otpVal}`);
+          const transporter = nodemailer.createTransport({
+              host: "smtp.gmail.com",
+              port: 587,
+              secure: false,
+              requireTLS: true,
+              auth: {
+                user:"jax0eagle@gmail.com",
+                pass:"nlcs look ejki gpej",
+              },
+              tls: {
+                rejectUnauthorized: false,
+              },
+            });
+        
+            let mailOptions = {
+              from:"jax0eagle@gmail.com",
+              to: email,
+              subject: " Welcome to TRIUMPH - Verify Your Account",
+              text:`Dear Fitness Lover,
+              
+              Thank you for choosing TRIUMPH for your fitness needs. We're thrilled to have you join our community!
+              To complete your signup process, please use the following OTP (One-Time Password) to verify your identity:
+              
+              OTP: ${otpVal}
+              
+              Please use this code within the next [time period] minutes to verify your account.
+              If you did not request this verification, please disregard this email.
+              If you have any questions or need assistance, feel free to reach out to our support team 
+              We're excited to accompany you on your fitness journey!
+              
+              Best regards,
+              The TRIUMPH Team`
+              
+            };
+            let info = await transporter.sendMail(mailOptions);
+            console.log("Email sent:", info.response);
+          }catch (error){
+            console.error("Email sending failed:", error);
+      }
+  };
 
 // Function to render the signup form
 userController.getSignup = async (req, res) => {
@@ -104,15 +150,15 @@ userController.getContact = async (req, res) => {
 
 // Function to verify the entered OTP
 userController.verifyOtp = async (req, res) => {
-  const { otp } = req.body;
-  const storedOtp = req.session.otp; // Retrieve the stored OTP from the session
-
-  if (otp === storedOtp) {
-    // If OTP is valid, redirect the user to a success page
-    res.render('otpSuccess'); // Create otpSuccess.ejs for the success page
+  const otp = req.body.otp;
+  const storedOtp =req.session.otp; 
+  console.log("from frontend",otp);
+  console.log("from session",storedOtp);
+  if(otp==storedOtp){
+    console.log("hello");
+    res.json({success:true,message:"successFully getting otp"})
   } else {
-    // If OTP is invalid, display an error message
-    res.render('otpError'); // Create otpError.ejs for the error page
+    res.json({success:false,message:"Not getting otp"})
   }
 };
 

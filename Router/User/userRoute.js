@@ -20,8 +20,8 @@
     router.get('/about',userController.getAbout);
     router.get('/contact',userController.getContact);
 
-
-
     // New route for OTP verification
-    router.post('/verifyOtp', userController.verifyOtp);
+    router.post('/verifyotp', userController.verifyOtp);
+
+
     module.exports = router;
