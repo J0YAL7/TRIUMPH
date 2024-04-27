@@ -1,7 +1,6 @@
 // Import required modules
 const nodemailer = require("nodemailer");
 const User = require('../../models/userSchema/userSchema'); // Import the User schema/model
-const {sendOtpEmail} = require('../emailService'); // Import the sendOtpEmail function
 const bcrypt = require('bcrypt');
 
 
@@ -118,6 +117,31 @@ userController.getlogin=async(req,res)=>{
   res.render('Userviews/userSignup')
 }
 
+userController.verifyLogin= async(req,res)=>{
+  console.log("Verified")
+
+  const email = req.body.email
+  const pass = req.body.pass
+  
+  const userData = await User.findOne({ email:email })
+  const passwordMatch = await bcrypt.compare(pass,userData.password);
+  console.log(userData.password);
+  console.log(passwordMatch);
+  if(userData && passwordMatch){
+    console.log("Login Completed")
+      res.redirect('/home')
+             
+   } else{
+    res.send(`
+    <script>
+      alert('Wrong email or password');
+      window.location.href = '/userLogin';
+    </script>
+  `);
+      }
+  
+}
+
 // Function to render the OTP page
 userController.getOtp = async (req, res) => {
   res.render('Userviews/otp');
@@ -155,7 +179,7 @@ userController.verifyOtp = async (req, res) => {
   console.log("from frontend",otp);
   console.log("from session",storedOtp);
   if(otp==storedOtp){
-    console.log("hello");
+    console.log("Signup Completed");
     res.json({success:true,message:"successFully getting otp"})
   } else {
     res.json({success:false,message:"Not getting otp"})

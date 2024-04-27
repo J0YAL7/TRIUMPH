@@ -12,12 +12,14 @@
     // Route to handle user signup
     router.get('/',userController.getSignup)
     router.get('/userLogin',userController.getlogin);
+    router.post('/userLogin',userController.verifyLogin);
     router.post('/signup1',userController.userSignup);
     router.get('/otp',userController.getOtp);
     router.get('/home',userController.gethome);
     router.get('/productDetails',userController.getproductDetails);
     router.get('/shoppingCart',userController.getshoppingCart);
     router.get('/about',userController.getAbout);
+
     router.get('/contact',userController.getContact);
 
     // New route for OTP verification

@@ -5,7 +5,9 @@ const path=require('path')
 const app = express();
 const PORT = 5000;
 const router = require('./Router/User/userRoute');
+const adminRoutes = require('./Router/Admin/adminRoute');
 const bodyParser = require('body-parser');
+const bcrypt=require('bcrypt')
 MongoDB();
 
 // Use express-session middleware
@@ -27,6 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine','ejs');
 
 app.use(router)
+app.use(adminRoutes)
 
 
 
